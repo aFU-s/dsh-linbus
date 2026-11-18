@@ -1,6 +1,6 @@
 # dsh-limbus
 
-给 [DeepSeek Harness（DSH）](https://github.com/deepseek-ai) 用的《边狱巴士》半自动托管插件。
+给 [DeepSeek Harness（DSH）](https://github.com/deepseek-ai) 用的《边狱巴士》半自动托管插件。本插件使用ds开发，当前仍在测试中。
 
 一个包同时提供 **Host 工具**边狱巴士」agent preset**：agent 能看游戏窗口、点击、按键，并能按「连续进行 n 次」的采光托管流程刷经验本 / 纺锤本。
 
