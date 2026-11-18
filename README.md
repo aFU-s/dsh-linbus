@@ -2,7 +2,7 @@
 
 给 [DeepSeek Harness（DSH）](https://github.com/deepseek-ai) 用的《边狱巴士》半自动托管插件。
 
-一个包同时提供 **Host 工具**和**「边狱巴士」agent preset**：agent 能看游戏窗口、点击、按键，并能按「连续进行 n 次」的采光托管流程刷经验本 / 纺锤本。
+一个包同时提供 **Host 工具**边狱巴士」agent preset**：agent 能看游戏窗口、点击、按键，并能按「连续进行 n 次」的采光托管流程刷经验本 / 纺锤本。
 
 > 项目地址：<https://github.com/aFU-s/dsh-linbus>
 >
@@ -146,7 +146,6 @@ PowerShell 后端（user32 / gdi32 P/Invoke）
 - 输入走 Windows 的 `mouse_event` / `keybd_event`，和真实鼠标键盘同一层；
 - 点击/按键前会先置前并确认窗口；
 - 截图可能包含账号信息，分享前请打码；
-- **自动化输入有封号风险，后果自负；建议先在小号验证。**
 
 ## 开发
 
