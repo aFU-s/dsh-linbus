@@ -9,6 +9,7 @@
       config:
         windowTitle: Limbus
         processName: LimbusCompany
+        registerSkills: false
     - id: preset-limbus
       name: '@deepseek-ai/dsh-agent-preset'
       config:
@@ -39,6 +40,8 @@
                 - 游戏必须已登录并停在主界面；标题页不支持。
           - id: limbus-control
             name: dsh-limbus
+            config:
+              registerSkills: true
           - id: tool-fs
             name: '@deepseek-ai/dsh-tool-fs'
           - id: tool-pwsh

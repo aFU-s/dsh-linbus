@@ -28,6 +28,7 @@ import { fileURLToPath } from 'node:url'
 const execFileP = promisify(execFile)
 const HERE = path.dirname(fileURLToPath(import.meta.url))
 const SCRIPT = path.join(HERE, 'scripts', 'limbus.ps1')
+const SKILLS_DIR = path.join(HERE, 'skills')
 const POWERSHELL = 'powershell.exe'
 const MARKER = '@@RESULT@@'
 const FARM_ROOT = process.env.LOCALAPPDATA
@@ -53,6 +54,78 @@ async function killFarmProcesses() {
 export const name = 'limbus-control'
 export const inject = ['tools']
 
+/** 读取包内 skills/<name>/SKILL.md 的 frontmatter；只要求 name / description。 */
+function parsePackagedSkill(file) {
+  let raw = ''
+  try {
+    raw = fs.readFileSync(file, 'utf8').replace(/^\uFEFF/, '')
+  } catch {
+    return null
+  }
+  const match = /^---\r?\n([\s\S]*?)\r?\n---\r?\n?([\s\S]*)$/.exec(raw)
+  if (!match) return null
+  const meta = {}
+  for (const line of match[1].split(/\r?\n/)) {
+    const idx = line.indexOf(':')
+    if (idx <= 0) continue
+    const key = line.slice(0, idx).trim()
+    let value = line.slice(idx + 1).trim()
+    if ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'"))) {
+      value = value.slice(1, -1)
+    }
+    meta[key] = value
+  }
+  if (!meta.name || !meta.description) return null
+  return {
+    name: meta.name,
+    description: meta.description,
+    whenToUse: meta['when-to-use'] || meta.whenToUse || '',
+    content: match[2].trim(),
+  }
+}
+
+/**
+ * 把包内技能注册到当前 ctx.skills（预设层）。
+ * 这样用户装完插件、选「边狱巴士」就能直接加载 limbus-farm / limbus-daily，
+ * 不需要再手动复制到 ~/.dsh/skills。
+ */
+function registerPackagedSkills(ctx) {
+  const registry = ctx && ctx.skills
+  if (!registry || typeof registry.register !== 'function') return
+  let entries = []
+  try {
+    entries = fs.readdirSync(SKILLS_DIR, { withFileTypes: true })
+  } catch {
+    return
+  }
+  for (const entry of entries) {
+    if (!entry.isDirectory()) continue
+    const file = path.join(SKILLS_DIR, entry.name, 'SKILL.md')
+    const parsed = parsePackagedSkill(file)
+    if (!parsed) continue
+    const registration = {
+      name: parsed.name,
+      description: parsed.description,
+      whenToUse: parsed.whenToUse || undefined,
+      content: parsed.content,
+      path: file,
+      resourceBase: { kind: 'directory', path: path.dirname(file) },
+      invocation: { modelInvocable: true, userInvocable: true },
+    }
+    try {
+      if (typeof ctx.effect === 'function') {
+        ctx.effect(() => registry.register(registration))
+      } else {
+        registry.register(registration)
+      }
+    } catch (error) {
+      if (ctx.logger && typeof ctx.logger.warn === 'function') {
+        ctx.logger.warn({ skill: parsed.name, error: String(error) }, 'packaged skill registration failed')
+      }
+    }
+  }
+}
+
 const DEFAULTS = {
   /** 窗口标题包含这个子串即命中（不区分大小写）。 */
   windowTitle: 'Limbus',
@@ -60,6 +133,8 @@ const DEFAULTS = {
   processName: 'LimbusCompany',
   /** 截图目录；空 = 系统临时目录下的 dsh-limbus-control/shots。 */
   shotDir: '',
+  /** 是否把包内 skills/ 注册到当前技能层；根 Host 行关闭，preset 行开启。 */
+  registerSkills: true,
 }
 
 export function resolveConfig(input = {}) {
@@ -68,6 +143,7 @@ export function resolveConfig(input = {}) {
   cfg.processName = String(cfg.processName ?? DEFAULTS.processName).trim()
   cfg.shotDir = String(cfg.shotDir || '').trim()
     || path.join(os.tmpdir(), 'dsh-limbus-control', 'shots')
+  cfg.registerSkills = cfg.registerSkills !== false
   return cfg
 }
 
@@ -225,6 +301,7 @@ const KEY_RE = /^(?:[a-z0-9]|enter|return|esc|escape|space|tab|backspace|up|down
 
 export function apply(ctx, rawConfig) {
   const cfg = resolveConfig(rawConfig)
+  if (cfg.registerSkills) registerPackagedSkills(ctx)
   const tools = ctx && ctx.tools
   if (!tools || typeof tools.register !== 'function') return
 

@@ -1,16 +1,31 @@
-// 最小冒烟测试：不碰游戏、不发输入，只验证工具注册与参数/输出形状。
+// 最小冒烟测试：不碰游戏、不发输入，只验证工具/技能注册与参数/输出形状。
 import assert from 'node:assert/strict'
 
 import * as plugin from '../index.js'
 
 const tools = []
-const ctx = { tools: { register: (tool) => tools.push(tool) } }
+const skills = []
+const ctx = {
+  tools: { register: (tool) => tools.push(tool) },
+  skills: { register: (skill) => { skills.push(skill); return () => {} } },
+  effect: (fn) => { fn() },
+}
 
-plugin.apply(ctx, { windowTitle: 'Limbus', processName: 'LimbusCompany' })
+plugin.apply(ctx, { windowTitle: 'Limbus', processName: 'LimbusCompany', registerSkills: true })
 
 assert.equal(plugin.name, 'limbus-control')
 assert.deepEqual(plugin.inject, ['tools'])
 assert.equal(tools.length, 10, '应注册 10 个工具')
+assert.equal(skills.length, 2, '应自动注册 2 个包内技能')
+assert.deepEqual(skills.map((skill) => skill.name).sort(), ['limbus-daily', 'limbus-farm'])
+for (const skill of skills) {
+  assert.equal(typeof skill.description, 'string')
+  assert.ok(skill.description.length > 0)
+  assert.equal(typeof skill.content, 'string')
+  assert.ok(skill.content.length > 0)
+  assert.equal(skill.invocation.modelInvocable, true)
+  assert.equal(skill.invocation.userInvocable, true)
+}
 
 const expected = [
   'limbus_status',
@@ -54,4 +69,4 @@ const zero = await farmStart.execute({ runs: 0, confirm: true }, {})
 assert.equal(zero.ok, false)
 assert.match(zero.text, /次数必须大于 0/)
 
-console.log('smoke ok: 10 tools, wait/validation/farm paths pass')
+console.log('smoke ok: 10 tools, 2 packaged skills, wait/validation/farm paths pass')

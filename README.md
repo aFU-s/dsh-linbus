@@ -28,38 +28,36 @@
 
 ## 安装
 
-### 1. 获取代码
+### 方式一：DSH 的「添加插件」（推荐）
+
+在 DSH 的 **Plugins → Add plugin** 里粘贴：
+
+```text
+https://github.com/aFU-s/dsh-linbus
+```
+
+安装并启用 `dsh-limbus` 后**重启 DSH**。新建会话时模式选择器里会出现「边狱巴士」。
+
+- 这个仓库根目录就是完整的 DSH bundle；
+- 安装时 DSH 会把它加入 profile 的 `dsh.profile.bundles`；
+- 包内的 `limbus-farm` / `limbus-daily` 技能会由插件自动注册，**不需要手动复制**。
+
+### 方式二：本地 clone 后链接
 
 ```powershell
 git clone https://github.com/aFU-s/dsh-linbus.git
 cd dsh-linbus
-```
-
-### 2. 安装到 DSH profile
-
-推荐在 DSH 的 **Plugins → Add plugin** 里选择本目录。
-
-或者用 CLI 把本目录链接进 `web` profile：
-
-```powershell
 dsh plugin --profile web add "link:$(Get-Location)"
 ```
 
-安装后确认 profile 的 `dsh.profile.bundles` 里有：
+确认 profile 的 `dsh.profile.bundles` 里有 `dsh-limbus`，然后重启 DSH。
+
+### 方式三：交给 agent 安装
+
+如果当前 DSH 有 `plugin_manager` 工具：
 
 ```text
-dsh-limbus
-```
-
-**重启 DSH**，新建会话时模式选择器里会出现「边狱巴士」。
-
-### 3. 安装技能（可选，推荐）
-
-DSH 不会自动安装包内技能，需要复制到用户技能目录：
-
-```powershell
-Copy-Item ".\skills\limbus-farm"  "$env:USERPROFILE\.dsh\skills\limbus-farm"  -Recurse -Force
-Copy-Item ".\skills\limbus-daily" "$env:USERPROFILE\.dsh\skills\limbus-daily" -Recurse -Force
+plugin_manager action=install_bundle target="https://github.com/aFU-s/dsh-linbus"
 ```
 
 ## 使用

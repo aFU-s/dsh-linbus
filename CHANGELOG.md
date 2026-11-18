@@ -2,6 +2,12 @@
 
 本项目遵循语义化版本。日期为本地时间。
 
+## 0.2.1 — 2026-11-18
+
+- 包内 `limbus-farm` / `limbus-daily` 技能改为由插件自动注册，安装后无需手动复制到 `~/.dsh/skills`；
+- 根 Host 行关闭技能注册，只有「边狱巴士」preset 行注册技能，避免重复；
+- README 增加 DSH **Plugins → Add plugin** 的 GitHub URL 安装方式。
+
 ## 0.2.0 — 2026-11-18
 
 - 将 `dsh-limbus-control` 与 `dsh-limbus-mode` 合并为一个包 `dsh-limbus`；

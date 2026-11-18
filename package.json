@@ -1,6 +1,6 @@
 {
   "name": "dsh-limbus",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "type": "module",
   "description": "DSH plugin + agent preset for semi-automatic Limbus Company farming (EXP stage 10 / spindle Lv60), with screenshot, click, key tools.",
   "author": "aFU-s",
