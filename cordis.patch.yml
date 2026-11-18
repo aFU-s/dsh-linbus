@@ -1,0 +1,68 @@
+# dsh-limbus — one bundle for the Limbus tools and the 边狱巴士 agent preset.
+#
+# The same package provides:
+#   1. the Host plugin row (tools: screenshot/click/key/farm);
+#   2. the `preset-limbus` declaration shown in the mode picker.
+- insert:
+    - id: limbus-control
+      name: dsh-limbus
+      config:
+        windowTitle: Limbus
+        processName: LimbusCompany
+    - id: preset-limbus
+      name: '@deepseek-ai/dsh-agent-preset'
+      config:
+        id: limbus
+        name: 边狱巴士
+        description: "半自动刷经验采光 #10 / 纺锤灯泡本 Lv60；连续进行 n 次，开始前确认模块消耗。"
+        order: 20
+        plugins:
+          - id: persona
+            name: '@deepseek-ai/dsh-persona'
+            config:
+              prefix: |
+                你是《边狱巴士》的半自动托管助手。
+                - 用户说“连续刷 n 次经验本 / 纺锤本（灯泡本）”时：
+                  - n ≤ 0：解释“次数必须大于 0”，不启动、不消耗模块；
+                  - 0 < n ≤ 10：确认消耗（经验 3n / 纺锤 2n）后，调用 limbus_farm_start({kind:"exp"|"spindle", runs:n, confirm:true})；
+                  - n > 10：说明“最多连续 10 次”，按 10 次执行（经验 30 / 纺锤 20 模块）。
+                - kind 映射：经验本 = "exp"；纺锤本 / 灯泡本 = "spindle"。
+                - farm 会自己把采光 STAGE 10 的「连续进行」改成 n，再进入一次；不要另开多次。
+                - 经验本选最右 STAGE 10；纺锤本选最左每日副本，弹窗里选最下面 Lv60 精灵提灯（资源最多）。
+                - 选人页必须预先选好队伍；farm 不自动选人，空队伍会以 team-empty 停止。
+                - 连续作战只有全部打完才出 VICTORY；中途自动进入下一场，不需要重复点「进入 / 开始战斗」。
+                - 停止用 limbus_farm_stop，它会写 stop 并杀掉后台 farm 进程，防止继续按 P/Enter。
+                - 刷本优先 farm：不要逐步截图；只有失败或未知界面才 limbus_screenshot。
+                - 运行中用 limbus_farm_status({waitSeconds:60}) 轮询；失败就停，不盲点。
+                - 每次只做用户要求的一件事；跑完就结束，建议新会话做下一个任务。
+                - 推理保持简短；不要粘贴长日志，只报摘要。
+                - 游戏必须已登录并停在主界面；标题页不支持。
+          - id: limbus-control
+            name: dsh-limbus
+          - id: tool-fs
+            name: '@deepseek-ai/dsh-tool-fs'
+          - id: tool-pwsh
+            name: '@deepseek-ai/dsh-tool-pwsh'
+          - id: time-context
+            name: '@deepseek-ai/dsh-time-context'
+          - id: skill-filesystem
+            name: '@deepseek-ai/dsh-skill-filesystem'
+          - id: tool-skill
+            name: '@deepseek-ai/dsh-tool-skill'
+          - id: compaction
+            name: cordis:group
+            group: true
+            isolate:
+              compaction: true
+              toolResultPruner: true
+            config:
+              - id: compaction-basic
+                name: '@deepseek-ai/dsh-compaction-basic'
+              - id: command-compact
+                name: '@deepseek-ai/dsh-command-compact'
+              - id: tool-result-pruner
+                name: '@deepseek-ai/dsh-compaction-tool-result-pruner'
+                config:
+                  thresholdChars: 8192
+                  headChars: 4096
+                  tailChars: 1024

@@ -1,0 +1,8 @@
+node_modules/
+runs/
+dist/
+*.log
+*.zip
+*.tmp
+.DS_Store
+.vscode/

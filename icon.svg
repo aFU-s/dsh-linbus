@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="Limbus semi-auto farming">
+  <rect x="8" y="8" width="240" height="240" rx="48" fill="#14181c"/>
+  <circle cx="128" cy="128" r="82" fill="none" stroke="#c9a451" stroke-width="6"/>
+  <circle cx="128" cy="128" r="64" fill="none" stroke="#3c4a52" stroke-width="4"/>
+  <path d="M52 128c22-32 48-48 76-48s54 16 76 48c-22 32-48 48-76 48s-54-16-76-48Z" fill="#1f6b70" stroke="#75d6d0" stroke-width="5"/>
+  <circle cx="128" cy="128" r="24" fill="#0d1114" stroke="#e8d7a4" stroke-width="6"/>
+  <circle cx="128" cy="128" r="9" fill="#e8d7a4"/>
+  <path d="M128 40v18M128 198v18M40 128h18M198 128h18" stroke="#c9a451" stroke-width="7" stroke-linecap="round"/>
+  <path d="M72 72l12 12M184 184l-12-12M184 72l-12 12M72 184l12-12" stroke="#3c4a52" stroke-width="5" stroke-linecap="round"/>
+</svg>

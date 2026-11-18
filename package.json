@@ -1,0 +1,64 @@
+{
+  "name": "dsh-limbus",
+  "version": "0.2.0",
+  "type": "module",
+  "description": "DSH plugin + agent preset for semi-automatic Limbus Company farming (EXP stage 10 / spindle Lv60), with screenshot, click, key tools.",
+  "author": "aFU-s",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aFU-s/dsh-linbus.git"
+  },
+  "homepage": "https://github.com/aFU-s/dsh-linbus#readme",
+  "bugs": {
+    "url": "https://github.com/aFU-s/dsh-linbus/issues"
+  },
+  "os": [
+    "win32"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "limbus",
+    "windows",
+    "computer-use"
+  ],
+  "main": "index.js",
+  "exports": {
+    ".": {
+      "default": "./index.js"
+    },
+    "./package.json": "./package.json",
+    "./locale/*.json": "./locale/*.json",
+    "./icon": "./icon.svg"
+  },
+  "files": [
+    "index.js",
+    "cordis.patch.yml",
+    "scripts",
+    "skills",
+    "docs",
+    "test",
+    "locale/*.json",
+    "icon.svg",
+    "README.md"
+  ],
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  },
+  "peerDependencies": {
+    "@deepseek-ai/cordis": "^4.0.1"
+  },
+  "peerDependenciesMeta": {
+    "@deepseek-ai/cordis": {
+      "optional": true
+    }
+  },
+  "license": "MIT"
+}
